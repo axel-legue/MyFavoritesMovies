@@ -36,4 +36,6 @@ ext {
     retrofit2Version = '2.4.0'
     gsonVersion = '2.8.5'
     okHttpVersion = '3.11.0'
+    rxJavaVersion = '2.1.1'
+    rxAndroidVersion = '2.0.1'
 }

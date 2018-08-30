@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">MyFavoritesMovies</string>
     <string name="menu_sort">Sort By</string>
+    <string name="movie_poster">Movie poster</string>
 </resources>

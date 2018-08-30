@@ -2,18 +2,16 @@ package com.legue.axel.myfavoritesmovies.library;
 
 import android.util.Log;
 
-import com.legue.axel.myfavoritesmovies.model.Movie;
+import com.legue.axel.myfavoritesmovies.model.MoviesResponse;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import io.reactivex.Observable;
 import okhttp3.OkHttpClient;
-import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Call;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitManager {
@@ -25,8 +23,8 @@ public class RetrofitManager {
     private static final String LANGUAGE_KEY = "language";
     private static final String API_KEY = "api_key";
     private static final String API_KEY_VALUE = "c84a53cfcf0110ef15678006695e3b38";
-    private TheMovieDBService movieDBService;
-    private Retrofit retrofit;
+    private final TheMovieDBService movieDBService;
+    private final Retrofit retrofit;
 
     public RetrofitManager() {
 
@@ -35,9 +33,11 @@ public class RetrofitManager {
 
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
 
+
         retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .client(client)
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -46,7 +46,7 @@ public class RetrofitManager {
     }
 
 
-    public Call<ResponseBody> getPopularMovies(String page, String language) {
+    public Observable<MoviesResponse> getPopularMovies(String page, String language) {
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put(API_KEY, API_KEY_VALUE);
         queryParams.put(LANGUAGE_KEY, language);
@@ -59,7 +59,7 @@ public class RetrofitManager {
     }
 
 
-    public Call<ResponseBody> getTopRatedMovies(String page, String language) {
+    public Observable<MoviesResponse> getTopRatedMovies(String page, String language) {
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put(API_KEY, API_KEY_VALUE);
         queryParams.put(LANGUAGE_KEY, language);

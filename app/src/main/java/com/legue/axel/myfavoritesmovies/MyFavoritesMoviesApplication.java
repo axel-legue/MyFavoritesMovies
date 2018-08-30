@@ -3,11 +3,13 @@ package com.legue.axel.myfavoritesmovies;
 import android.app.Application;
 
 import com.legue.axel.myfavoritesmovies.library.RetrofitManager;
+import com.legue.axel.myfavoritesmovies.model.MoviesResponse;
 
 public class MyFavoritesMoviesApplication extends Application {
 
     private static MyFavoritesMoviesApplication instance;
     private RetrofitManager mRetrofitManager;
+    private MoviesResponse moviesResponse;
 
     public static MyFavoritesMoviesApplication getInstance() {
         return instance;
@@ -26,5 +28,13 @@ public class MyFavoritesMoviesApplication extends Application {
 
     public void setRetrofitManager(RetrofitManager mRetrofitManager) {
         this.mRetrofitManager = mRetrofitManager;
+    }
+
+    public MoviesResponse getMoviesResponse() {
+        return moviesResponse;
+    }
+
+    public void setMoviesResponse(MoviesResponse moviesResponse) {
+        this.moviesResponse = moviesResponse;
     }
 }
