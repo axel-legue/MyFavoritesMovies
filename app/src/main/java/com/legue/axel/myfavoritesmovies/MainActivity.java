@@ -1,19 +1,20 @@
 package com.legue.axel.myfavoritesmovies;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.view.View;
+import android.widget.ProgressBar;
 
-import com.legue.axel.myfavoritesmovies.library.RetrofitHelper;
+import com.google.gson.Gson;
+import com.legue.axel.myfavoritesmovies.library.retrofit.RetrofitHelper;
 import com.legue.axel.myfavoritesmovies.model.Movie;
-import com.legue.axel.myfavoritesmovies.model.MovieAdapter;
 import com.legue.axel.myfavoritesmovies.model.MoviesResponse;
 
 import java.util.ArrayList;
@@ -33,6 +34,20 @@ public class MainActivity extends AppCompatActivity implements ActivityInterface
 
     @BindView(R.id.rv_movies)
     RecyclerView mMoviesRecyclerView;
+    @BindView(R.id.pb_load_movies)
+    ProgressBar mLoadingProgressBar;
+
+    MovieAdapter.MovieListener mMovieListener = movie -> {
+        if (movie != null) {
+            // Convert Movie to Json String format
+            Gson gson = new Gson();
+            String dataMovieJson = gson.toJson(movie);
+
+            Intent intent = new Intent(MainActivity.this, DetailMovieActivity.class);
+            intent.putExtra(Constants.EXTRA_MOVIE, dataMovieJson);
+            startActivity(intent);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,16 +67,17 @@ public class MainActivity extends AppCompatActivity implements ActivityInterface
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         int itemId = item.getItemId();
+
         switch (itemId) {
-            case R.id.menu_order:
-                Toast.makeText(this, "order selected", Toast.LENGTH_SHORT).show();
+            case R.id.menu_top_rated_movies:
+                loadTopRatedMovies(1);
+                break;
+            case R.id.menu_popular_movies:
+                loadPopularMovies(1);
                 break;
         }
-
         return super.onOptionsItemSelected(item);
-
     }
 
     @Override
@@ -81,27 +97,22 @@ public class MainActivity extends AppCompatActivity implements ActivityInterface
             movieList = new ArrayList<>();
         }
 
-        loadPopularMovies();
-
-        // Mock Data for Adapter
-        for (int i = 0; i < 30; i++) {
-            Movie movie = new Movie();
-            movie.setTitle("Movie " + i);
-            movieList.add(movie);
-        }
-
-
-        mMovieAdapter = new MovieAdapter(this, movieList);
-        //TODO : replace number of column with constant.
-        mMoviesRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        mMovieAdapter = new MovieAdapter(this, movieList, mMovieListener);
+        mMoviesRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         mMoviesRecyclerView.setAdapter(mMovieAdapter);
         mMoviesRecyclerView.setHasFixedSize(true);
 
-
+        loadPopularMovies(1);
     }
 
-    private void loadPopularMovies() {
-        RetrofitHelper.getPopularMovies("1", "en_US", Constants.ACTION_COMPLETE, moviesHandler, application);
+    private void loadPopularMovies(Integer page) {
+        mLoadingProgressBar.setVisibility(View.VISIBLE);
+        RetrofitHelper.getPopularMovies(page.toString(), Constants.LANGUAGE_US, Constants.ACTION_COMPLETE, moviesHandler, application);
+    }
+
+    private void loadTopRatedMovies(Integer page) {
+        mLoadingProgressBar.setVisibility(View.VISIBLE);
+        RetrofitHelper.getTopRatedMovies(page.toString(), Constants.LANGUAGE_US, Constants.ACTION_COMPLETE, moviesHandler, application);
     }
 
     private Handler moviesHandler = new Handler() {
@@ -110,15 +121,18 @@ public class MainActivity extends AppCompatActivity implements ActivityInterface
 
             switch (msg.what) {
                 case Constants.ACTION_COMPLETE:
+                    mLoadingProgressBar.setVisibility(View.INVISIBLE);
                     if (application.getMoviesResponse() != null) {
-                        //TODO fill the list of movies
-                        Log.i(TAG, "handleMessage: ");
                         moviesResponse = application.getMoviesResponse();
-                        //TODO : Convert Movie Response to Movies
+                        movieList.clear();
+                        movieList.addAll(moviesResponse.getMovieList());
+                        mMovieAdapter.notifyDataSetChanged();
+
                     }
                     break;
 
                 case Constants.ACTION_ERROR:
+                    mLoadingProgressBar.setVisibility(View.INVISIBLE);
                     break;
             }
             super.handleMessage(msg);

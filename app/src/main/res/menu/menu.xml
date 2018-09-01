@@ -2,8 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/menu_order"
-        android:title="@string/menu_sort"
-        app:showAsAction="never" />
+        android:id="@+id/menu_popular_movies"
+        android:title="@string/menu_popular_movies"
+        app:showAsAction="collapseActionView"/>
+
+    <item
+        android:id="@+id/menu_top_rated_movies"
+        android:title="@string/menu_top_rated_movies"
+        app:showAsAction="collapseActionView" />
 
 </menu>

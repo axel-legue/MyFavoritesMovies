@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rl_wrapper_movie"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="280dp">
 
     <ImageView
         android:id="@+id/iv_movie"
@@ -14,12 +14,12 @@
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_alignParentBottom="true"
         android:background="@color/scrimText"
-        android:paddingBottom="16dp"
-        android:paddingStart="16dp"
-        android:paddingTop="16dp"
+        android:paddingBottom="8dp"
+        android:paddingStart="8dp"
+        android:paddingTop="8dp"
         android:textColor="@android:color/white"
-        android:textSize="20sp" />
+        android:textSize="18sp" />
 </RelativeLayout>

@@ -1,7 +1,8 @@
-package com.legue.axel.myfavoritesmovies.library;
+package com.legue.axel.myfavoritesmovies.library.retrofit;
 
 import android.util.Log;
 
+import com.legue.axel.myfavoritesmovies.library.TheMovieDBService;
 import com.legue.axel.myfavoritesmovies.model.MoviesResponse;
 
 import java.util.HashMap;
@@ -23,6 +24,7 @@ public class RetrofitManager {
     private static final String LANGUAGE_KEY = "language";
     private static final String API_KEY = "api_key";
     private static final String API_KEY_VALUE = "c84a53cfcf0110ef15678006695e3b38";
+
     private final TheMovieDBService movieDBService;
     private final Retrofit retrofit;
 

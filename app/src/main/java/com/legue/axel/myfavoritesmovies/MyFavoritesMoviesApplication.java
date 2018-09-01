@@ -2,7 +2,7 @@ package com.legue.axel.myfavoritesmovies;
 
 import android.app.Application;
 
-import com.legue.axel.myfavoritesmovies.library.RetrofitManager;
+import com.legue.axel.myfavoritesmovies.library.retrofit.RetrofitManager;
 import com.legue.axel.myfavoritesmovies.model.MoviesResponse;
 
 public class MyFavoritesMoviesApplication extends Application {
