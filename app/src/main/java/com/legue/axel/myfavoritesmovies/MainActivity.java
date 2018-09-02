@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.google.gson.Gson;
+import com.legue.axel.myfavoritesmovies.library.Constants;
 import com.legue.axel.myfavoritesmovies.library.retrofit.RetrofitHelper;
 import com.legue.axel.myfavoritesmovies.model.Movie;
 import com.legue.axel.myfavoritesmovies.model.MoviesResponse;
@@ -34,11 +36,11 @@ public class MainActivity extends AppCompatActivity implements ActivityInterface
     private List<Movie> movieList;
 
     @BindView(R.id.rv_movies)
-    RecyclerView mMoviesRecyclerView;
+    private RecyclerView mMoviesRecyclerView;
     @BindView(R.id.pb_load_movies)
-    ProgressBar mLoadingProgressBar;
+    private ProgressBar mLoadingProgressBar;
 
-    MovieAdapter.MovieListener mMovieListener = movie -> {
+    private MovieAdapter.MovieListener mMovieListener = (position, movie, sharedImageView) -> {
         if (movie != null) {
             // Convert the Movie selected to Json String format
             Gson gson = new Gson();
@@ -46,10 +48,15 @@ public class MainActivity extends AppCompatActivity implements ActivityInterface
 
             //Start Activity that will show movie details
             Intent intent = new Intent(MainActivity.this, DetailMovieActivity.class);
+
+            // Get the transition name from the string
+            String transitionName = getString(R.string.poster_transition);
+
+            ActivityOptionsCompat options = ActivityOptionsCompat
+                    .makeSceneTransitionAnimation(this, sharedImageView, transitionName);
             intent.putExtra(Constants.EXTRA_MOVIE, dataMovieJson);
-//            ActivityOptionsCompat optionsCompat = ActivityOptionsCompat
-//                    .makeSceneTransitionAnimation(this,(View)m)
-            startActivity(intent);
+
+            ActivityCompat.startActivity(this, intent, options.toBundle());
         }
     };
 
@@ -58,7 +65,8 @@ public class MainActivity extends AppCompatActivity implements ActivityInterface
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initView();
+        ButterKnife.bind(this);
+
         initClickListener();
         initData();
     }
@@ -82,11 +90,6 @@ public class MainActivity extends AppCompatActivity implements ActivityInterface
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void initView() {
-        ButterKnife.bind(this);
     }
 
     @Override

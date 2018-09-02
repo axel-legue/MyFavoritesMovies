@@ -4,7 +4,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.legue.axel.myfavoritesmovies.Constants;
+import com.legue.axel.myfavoritesmovies.library.Constants;
 import com.legue.axel.myfavoritesmovies.MyFavoritesMoviesApplication;
 import com.legue.axel.myfavoritesmovies.model.MoviesResponse;
 

@@ -2,9 +2,9 @@ package com.legue.axel.myfavoritesmovies;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.legue.axel.myfavoritesmovies.library.Constants;
 import com.legue.axel.myfavoritesmovies.model.Movie;
 import com.squareup.picasso.Picasso;
 
@@ -28,7 +29,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     private MovieListener mMovieListener;
 
     public interface MovieListener {
-        void movieSelected(Movie movie);
+        void movieSelected(int position, Movie movie, View viewToAnimate);
     }
 
     public MovieAdapter(Context context, List<Movie> movieList, MovieListener movieListener) {
@@ -52,8 +53,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
             Picasso.with(mContext)
                     .load(BuildImageUrl(movie.getBackdropPath()))
-                    .error(R.drawable.ic_launcher_background)
-                    .placeholder(R.drawable.ic_launcher_background)
+                    .error(R.drawable.placeholder_image)
+                    .placeholder(R.drawable.placeholder_image)
                     .into(holder.posterImageView);
 
 
@@ -61,7 +62,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                 holder.titleTextView.setText(movie.getTitle());
             }
 
-            holder.wrapperMovieRelativeLayout.setOnClickListener(v -> mMovieListener.movieSelected(movie));
+            ViewCompat.setTransitionName(holder.posterImageView, movie.getTitle());
+
+            holder.wrapperMovieRelativeLayout.setOnClickListener(v -> mMovieListener.movieSelected(position, movie, holder.posterImageView));
         }
 
     }

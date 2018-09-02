@@ -1,4 +1,4 @@
-package com.legue.axel.myfavoritesmovies;
+package com.legue.axel.myfavoritesmovies.library;
 
 public class Constants {
 
@@ -8,6 +8,7 @@ public class Constants {
 
     public static final String ERROR = "Error";
     public static final String EXTRA_MOVIE = "extra_movie";
+    public static final String EXTRA_MOVIE_IMAGE_TRANSITION_NAME = "extra_movie_transition";
 
     /**
      * theMovieDB languages
