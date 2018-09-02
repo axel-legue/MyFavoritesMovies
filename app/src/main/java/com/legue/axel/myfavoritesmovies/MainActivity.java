@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -39,12 +40,15 @@ public class MainActivity extends AppCompatActivity implements ActivityInterface
 
     MovieAdapter.MovieListener mMovieListener = movie -> {
         if (movie != null) {
-            // Convert Movie to Json String format
+            // Convert the Movie selected to Json String format
             Gson gson = new Gson();
             String dataMovieJson = gson.toJson(movie);
 
+            //Start Activity that will show movie details
             Intent intent = new Intent(MainActivity.this, DetailMovieActivity.class);
             intent.putExtra(Constants.EXTRA_MOVIE, dataMovieJson);
+//            ActivityOptionsCompat optionsCompat = ActivityOptionsCompat
+//                    .makeSceneTransitionAnimation(this,(View)m)
             startActivity(intent);
         }
     };

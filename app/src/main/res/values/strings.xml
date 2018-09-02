@@ -3,4 +3,8 @@
     <string name="menu_popular_movies">Popular Movies</string>
     <string name="menu_top_rated_movies">Top Rated Movies</string>
     <string name="movie_poster">Movie poster</string>
+    <!-- Shared Element Name-->
+    <string name="poster_transition">posterShared</string>
+    <string name="movie_title">Title</string>
+    <string name="movie_release_date">Release date</string>
 </resources>

@@ -12,6 +12,7 @@
         <item name="colorPrimary">#F44336</item>
         <item name="colorPrimaryDark">#D32F2F</item>
         <item name="colorAccent">#F4A236</item>
+        <item name="android:windowContentTransitions">true</item>
     </style>
 
 </resources>
