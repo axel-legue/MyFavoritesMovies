@@ -36,9 +36,9 @@ public class MainActivity extends AppCompatActivity implements ActivityInterface
     private List<Movie> movieList;
 
     @BindView(R.id.rv_movies)
-    private RecyclerView mMoviesRecyclerView;
+    RecyclerView mMoviesRecyclerView;
     @BindView(R.id.pb_load_movies)
-    private ProgressBar mLoadingProgressBar;
+    ProgressBar mLoadingProgressBar;
 
     private MovieAdapter.MovieListener mMovieListener = (position, movie, sharedImageView) -> {
         if (movie != null) {

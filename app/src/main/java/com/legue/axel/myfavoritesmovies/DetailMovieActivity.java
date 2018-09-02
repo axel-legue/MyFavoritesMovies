@@ -21,17 +21,17 @@ public class DetailMovieActivity extends AppCompatActivity implements ActivityIn
     private Movie mMovieSelected;
 
     @BindView(R.id.imageView)
-    private ImageView imageView;
+    ImageView imageView;
     @BindView(R.id.tv_title)
-    private TextView mTitleTextView;
+    TextView mTitleTextView;
     @BindView(R.id.tv_release_date)
-    private TextView mReleaseDateTextView;
+    TextView mReleaseDateTextView;
     @BindView(R.id.tv_original_title)
-    private TextView mOriginalTitleTextView;
+    TextView mOriginalTitleTextView;
     @BindView(R.id.tv_vote)
-    private TextView mVoteTextView;
+    TextView mVoteTextView;
     @BindView(R.id.tv_synopsis)
-    private TextView mSynopsisTextView;
+    TextView mSynopsisTextView;
 
 
     @Override
