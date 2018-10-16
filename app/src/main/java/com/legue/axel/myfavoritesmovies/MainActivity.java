@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.google.gson.Gson;
+import com.legue.axel.myfavoritesmovies.adapter.MovieAdapter;
 import com.legue.axel.myfavoritesmovies.library.Constants;
 import com.legue.axel.myfavoritesmovies.library.retrofit.RetrofitHelper;
 import com.legue.axel.myfavoritesmovies.model.Movie;
@@ -114,12 +115,22 @@ public class MainActivity extends AppCompatActivity implements ActivityInterface
 
     private void loadPopularMovies(Integer page) {
         mLoadingProgressBar.setVisibility(View.VISIBLE);
-        RetrofitHelper.getPopularMovies(page.toString(), Constants.LANGUAGE_US, Constants.ACTION_COMPLETE, moviesHandler, application);
+        RetrofitHelper.getPopularMovies(
+                page.toString(),
+                Constants.LANGUAGE_US,
+                Constants.ACTION_COMPLETE,
+                moviesHandler,
+                application);
     }
 
     private void loadTopRatedMovies(Integer page) {
         mLoadingProgressBar.setVisibility(View.VISIBLE);
-        RetrofitHelper.getTopRatedMovies(page.toString(), Constants.LANGUAGE_US, Constants.ACTION_COMPLETE, moviesHandler, application);
+        RetrofitHelper.getTopRatedMovies(
+                page.toString(),
+                Constants.LANGUAGE_US,
+                Constants.ACTION_COMPLETE,
+                moviesHandler,
+                application);
     }
 
     private Handler moviesHandler = new Handler() {

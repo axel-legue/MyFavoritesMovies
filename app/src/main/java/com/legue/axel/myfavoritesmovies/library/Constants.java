@@ -18,7 +18,7 @@ public class Constants {
     /**
      * theMovieDB Image Constants
      */
-    public static final String BASE_IMAGE_UL = "http://image.tmdb.org/t/p/";
+    public static final String BASE_IMAGE_URL = "http://image.tmdb.org/t/p/";
     public static final String IMAGE_QUALITY_W92 = "w92";
     public static final String IMAGE_QUALITY_W154 = "w154";
     public static final String IMAGE_QUALITY_W185 = "w185";
@@ -26,4 +26,11 @@ public class Constants {
     public static final String IMAGE_QUALITY_W500 = "w500";
     public static final String IMAGE_QUALITY_W780 = "w780";
     public static final String IMAGE_QUALITY_ORIGINAL = "original";
+
+    /**
+     * Youtube
+     */
+    public static final String BASE_YOUTUBE_URL = "http://www.youtube.com/watch?v=";
+    public static final String YOUTUBE_API_KEY = "AIzaSyB0u2ZKYsF8iQPd3l1BtZV6zYL4Og_ZOX0";
+
 }

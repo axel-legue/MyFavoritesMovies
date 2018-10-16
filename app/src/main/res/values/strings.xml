@@ -10,4 +10,6 @@
     <string name="movie_title_original">Original title </string>
     <string name="movie_vote">Vote </string>
     <string name="movie_synopsis">Synopsis</string>
+    <string name="movie_trailers">Trailers</string>
+    <string name="trailer_for_movie">Trailer for movie</string>
 </resources>

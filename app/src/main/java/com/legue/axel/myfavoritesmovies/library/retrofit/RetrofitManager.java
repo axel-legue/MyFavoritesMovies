@@ -4,6 +4,8 @@ import android.util.Log;
 
 import com.legue.axel.myfavoritesmovies.library.TheMovieDBService;
 import com.legue.axel.myfavoritesmovies.model.MoviesResponse;
+import com.legue.axel.myfavoritesmovies.model.ReviewsResponse;
+import com.legue.axel.myfavoritesmovies.model.TrailersResponse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -68,6 +70,23 @@ public class RetrofitManager {
         queryParams.put(PAGE_KEY, page);
 
         return movieDBService.getTopRatedMovies(queryParams);
+    }
+
+    public Observable<TrailersResponse> getTrailersMovie(int movieId, String language) {
+        Map<String, String> queryParams = new HashMap<>();
+        queryParams.put(API_KEY, API_KEY_VALUE);
+        queryParams.put(LANGUAGE_KEY, language);
+
+        return movieDBService.getTrailerMovie(movieId, queryParams);
+    }
+
+    public Observable<ReviewsResponse> getReviewsMovie(int movieId, String page, String language) {
+        Map<String, String> queryParams = new HashMap<>();
+        queryParams.put(API_KEY, API_KEY_VALUE);
+        queryParams.put(LANGUAGE_KEY, language);
+        queryParams.put(PAGE_KEY, page);
+
+        return movieDBService.getReviewsMovie(movieId, queryParams);
     }
 
 

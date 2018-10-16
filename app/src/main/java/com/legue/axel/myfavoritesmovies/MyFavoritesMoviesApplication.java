@@ -4,12 +4,14 @@ import android.app.Application;
 
 import com.legue.axel.myfavoritesmovies.library.retrofit.RetrofitManager;
 import com.legue.axel.myfavoritesmovies.model.MoviesResponse;
+import com.legue.axel.myfavoritesmovies.model.TrailersResponse;
 
 public class MyFavoritesMoviesApplication extends Application {
 
     private static MyFavoritesMoviesApplication instance;
     private RetrofitManager mRetrofitManager;
     private MoviesResponse moviesResponse;
+    private TrailersResponse trailersResponse;
 
     public static MyFavoritesMoviesApplication getInstance() {
         return instance;
@@ -36,5 +38,13 @@ public class MyFavoritesMoviesApplication extends Application {
 
     public void setMoviesResponse(MoviesResponse moviesResponse) {
         this.moviesResponse = moviesResponse;
+    }
+
+    public TrailersResponse getTrailersResponse() {
+        return trailersResponse;
+    }
+
+    public void setTrailersResponse(TrailersResponse trailersResponse) {
+        this.trailersResponse = trailersResponse;
     }
 }

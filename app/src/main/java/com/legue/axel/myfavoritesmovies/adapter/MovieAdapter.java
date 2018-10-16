@@ -1,4 +1,4 @@
-package com.legue.axel.myfavoritesmovies;
+package com.legue.axel.myfavoritesmovies.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.legue.axel.myfavoritesmovies.R;
 import com.legue.axel.myfavoritesmovies.library.Constants;
 import com.legue.axel.myfavoritesmovies.model.Movie;
 import com.squareup.picasso.Picasso;
@@ -70,7 +71,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     }
 
     private String BuildImageUrl(String endPointUrl) {
-        return Constants.BASE_IMAGE_UL + Constants.IMAGE_QUALITY_W500 + endPointUrl;
+        return Constants.BASE_IMAGE_URL + Constants.IMAGE_QUALITY_W500 + endPointUrl;
     }
 
     @Override
