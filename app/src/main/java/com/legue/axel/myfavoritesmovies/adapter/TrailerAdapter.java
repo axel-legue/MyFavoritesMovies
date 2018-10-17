@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.legue.axel.myfavoritesmovies.R;
 import com.legue.axel.myfavoritesmovies.library.Constants;
@@ -50,6 +51,8 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerH
 
         if (trailer != null) {
             holder.mCardViewTrailer.setOnClickListener(v -> mTrailerListener.onTrailerSelected(buildYoutubeIntent(trailer.getKey())));
+            String trailerName = mContext.getString(R.string.trailer_name, (position + 1));
+            holder.mTrailerName.setText(trailerName);
         }
     }
 
@@ -67,6 +70,8 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerH
         CardView mCardViewTrailer;
         @BindView(R.id.iv_ic_play)
         ImageView mPlayIcon;
+        @BindView(R.id.tv_trailer_name)
+        TextView mTrailerName;
 
         public TrailerHolder(View itemView) {
             super(itemView);

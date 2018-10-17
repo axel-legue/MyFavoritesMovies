@@ -7,6 +7,7 @@ import android.util.Log;
 import com.legue.axel.myfavoritesmovies.library.Constants;
 import com.legue.axel.myfavoritesmovies.MyFavoritesMoviesApplication;
 import com.legue.axel.myfavoritesmovies.model.MoviesResponse;
+import com.legue.axel.myfavoritesmovies.model.ReviewsResponse;
 import com.legue.axel.myfavoritesmovies.model.TrailersResponse;
 
 import io.reactivex.Observer;
@@ -127,6 +128,51 @@ public class RetrofitHelper {
                     public void onNext(TrailersResponse trailersResponse) {
                         if (trailersResponse != null) {
                             application.setTrailersResponse(trailersResponse);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (e instanceof HttpException) {
+                            HttpException httpException = (HttpException) e;
+                            int code = httpException.code();
+                            Log.i(TAG, "Server respond with code : " + code);
+                            Log.i(TAG, "Response : " + httpException.getMessage());
+                        } else {
+                            Log.i(TAG, e.getMessage() == null ? "unknown error" : e.getMessage());
+                            e.printStackTrace();
+                        }
+                        // Send message for send image
+                        Message msg = new Message();
+                        msg.what = Constants.ACTION_ERROR;
+                        msg.obj = Constants.ERROR;
+                        handlerMessage.sendMessage(msg);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.i(TAG, "onComplete");
+                        Message message = new Message();
+                        message.what = action;
+                        handlerMessage.sendMessage(message);
+                    }
+                });
+    }
+
+    public static void getReviewsMovie(int movieId, String language, String page, final int action, final Handler handlerMessage, final MyFavoritesMoviesApplication application) {
+        application.getRetrofitManager().getReviewsMovie(movieId, page, language)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ReviewsResponse>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        Log.i(TAG, "onSubscribe :" + d.toString());
+                    }
+
+                    @Override
+                    public void onNext(ReviewsResponse reviewsResponse) {
+                        if (reviewsResponse != null) {
+                            application.setReviewResponse(reviewsResponse);
                         }
                     }
 

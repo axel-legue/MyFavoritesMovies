@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.legue.axel.myfavoritesmovies.library.retrofit.RetrofitManager;
 import com.legue.axel.myfavoritesmovies.model.MoviesResponse;
+import com.legue.axel.myfavoritesmovies.model.ReviewsResponse;
 import com.legue.axel.myfavoritesmovies.model.TrailersResponse;
 
 public class MyFavoritesMoviesApplication extends Application {
@@ -12,6 +13,7 @@ public class MyFavoritesMoviesApplication extends Application {
     private RetrofitManager mRetrofitManager;
     private MoviesResponse moviesResponse;
     private TrailersResponse trailersResponse;
+    private ReviewsResponse reviewResponse;
 
     public static MyFavoritesMoviesApplication getInstance() {
         return instance;
@@ -46,5 +48,13 @@ public class MyFavoritesMoviesApplication extends Application {
 
     public void setTrailersResponse(TrailersResponse trailersResponse) {
         this.trailersResponse = trailersResponse;
+    }
+
+    public ReviewsResponse getReviewResponse() {
+        return reviewResponse;
+    }
+
+    public void setReviewResponse(ReviewsResponse reviewResponse) {
+        this.reviewResponse = reviewResponse;
     }
 }

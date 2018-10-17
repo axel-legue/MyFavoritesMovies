@@ -20,8 +20,8 @@ public interface TheMovieDBService {
     Observable<MoviesResponse> getTopRatedMovies(@QueryMap Map<String, String> mapString);
 
     @GET("/3/movie/{id}/videos")
-    Observable<TrailersResponse> getTrailerMovie(@Path("id") int idMovie, @QueryMap Map<String,String> stringMap);
+    Observable<TrailersResponse> getTrailerMovie(@Path("id") int idMovie, @QueryMap Map<String, String> stringMap);
 
     @GET("/3/movie/{id}/reviews")
-    Observable<ReviewsResponse> getReviewsMovie(@Path("id") int idMovie, @QueryMap Map<String,String> stringMap);
+    Observable<ReviewsResponse> getReviewsMovie(@Path("id") int idMovie, @QueryMap Map<String, String> stringMap);
 }

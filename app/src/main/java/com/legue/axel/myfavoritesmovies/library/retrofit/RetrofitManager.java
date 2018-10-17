@@ -81,6 +81,7 @@ public class RetrofitManager {
     }
 
     public Observable<ReviewsResponse> getReviewsMovie(int movieId, String page, String language) {
+        Log.i(TAG, "getReviewsMovie: ");
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put(API_KEY, API_KEY_VALUE);
         queryParams.put(LANGUAGE_KEY, language);
