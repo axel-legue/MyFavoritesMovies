@@ -1,41 +1,77 @@
 package com.legue.axel.myfavoritesmovies.model;
 
-import com.google.gson.annotations.SerializedName;
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
 
 import java.util.List;
 
+@Entity(tableName = "movie")
 public class Movie {
-
-    @SerializedName("poster_path")
-    private String posterPath;
-    @SerializedName("adult")
-    private Boolean adult;
-    @SerializedName("overview")
-    private String overview;
-    @SerializedName("release_date")
-    private String releaseDate;
-    @SerializedName("genre_ids")
-    private List<Integer> genreIds;
-    @SerializedName("id")
+    @PrimaryKey(autoGenerate = true)
     private int id;
-    @SerializedName("original_title")
+    @ColumnInfo(name = "poster_path")
+    private String posterPath;
+
+    private Boolean adult;
+
+    private String overview;
+    @ColumnInfo(name = "release_date")
+    private String releaseDate;
+    @ColumnInfo(name = "genre")
+    private List<Integer> genreIds;
+    @ColumnInfo(name = "original_title")
     private String originalTitle;
-    @SerializedName("original_language")
+    @ColumnInfo(name = "original_language")
     private String originalLanguage;
-    @SerializedName("title")
+
     private String title;
-    @SerializedName("backdrop_path")
+    @ColumnInfo(name = "backdrop_path")
     private String backdropPath;
-    @SerializedName("popularity")
+
     private float popularity;
-    @SerializedName("vote_count")
+    @ColumnInfo(name = "vote_count")
     private int voteCount;
-    @SerializedName("video")
+
     private boolean isVideo;
-    @SerializedName("vote_average")
+    @ColumnInfo(name = "vote_average")
     private float voteAverage;
 
+    @Ignore
     public Movie() {
+    }
+
+    public Movie(
+            int id,
+            String posterPath,
+            Boolean adult,
+            String overview,
+            String releaseDate,
+            List<Integer> genreIds,
+            String originalTitle,
+            String originalLanguage,
+            String title,
+            String backdropPath,
+            float popularity,
+            int voteCount,
+            boolean isVideo,
+            float voteAverage) {
+
+        this.id = id;
+        this.posterPath = posterPath;
+        this.adult = adult;
+        this.overview = overview;
+        this.releaseDate = releaseDate;
+        this.genreIds = genreIds;
+        this.originalTitle = originalTitle;
+        this.originalLanguage = originalLanguage;
+        this.title = title;
+        this.backdropPath = backdropPath;
+        this.popularity = popularity;
+        this.voteCount = voteCount;
+        this.isVideo = isVideo;
+        this.voteAverage = voteAverage;
     }
 
     public String getPosterPath() {
