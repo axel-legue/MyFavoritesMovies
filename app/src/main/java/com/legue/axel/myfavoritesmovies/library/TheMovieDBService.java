@@ -1,8 +1,8 @@
 package com.legue.axel.myfavoritesmovies.library;
 
-import com.legue.axel.myfavoritesmovies.model.MoviesResponse;
-import com.legue.axel.myfavoritesmovies.model.ReviewsResponse;
-import com.legue.axel.myfavoritesmovies.model.TrailersResponse;
+import com.legue.axel.myfavoritesmovies.library.response.MoviesResponse;
+import com.legue.axel.myfavoritesmovies.library.response.ReviewsResponse;
+import com.legue.axel.myfavoritesmovies.library.response.TrailersResponse;
 
 import java.util.Map;
 

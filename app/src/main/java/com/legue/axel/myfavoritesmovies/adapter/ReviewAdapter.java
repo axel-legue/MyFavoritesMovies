@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.legue.axel.myfavoritesmovies.R;
-import com.legue.axel.myfavoritesmovies.model.Review;
+import com.legue.axel.myfavoritesmovies.database.model.Review;
 
 import java.util.List;
 

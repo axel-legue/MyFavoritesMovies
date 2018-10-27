@@ -8,4 +8,5 @@
     <color name="myFavoriteColorPrimary">#F44336</color>
     <color name="myFavoriteColorPrimaryDark">#D32F2F</color>
     <color name="myFavoriteColorAccent">#F4A236</color>
+    <color name="grey">#F4A236</color>
 </resources>

@@ -2,10 +2,12 @@ package com.legue.axel.myfavoritesmovies.library.retrofit;
 
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.legue.axel.myfavoritesmovies.library.TheMovieDBService;
-import com.legue.axel.myfavoritesmovies.model.MoviesResponse;
-import com.legue.axel.myfavoritesmovies.model.ReviewsResponse;
-import com.legue.axel.myfavoritesmovies.model.TrailersResponse;
+import com.legue.axel.myfavoritesmovies.library.response.MoviesResponse;
+import com.legue.axel.myfavoritesmovies.library.response.ReviewsResponse;
+import com.legue.axel.myfavoritesmovies.library.response.TrailersResponse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +38,6 @@ public class RetrofitManager {
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
-
 
         retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)

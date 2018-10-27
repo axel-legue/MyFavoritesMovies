@@ -1,18 +1,25 @@
-package com.legue.axel.myfavoritesmovies.model;
+package com.legue.axel.myfavoritesmovies.library.response;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.legue.axel.myfavoritesmovies.database.model.Review;
 
 import java.util.List;
 
 public class ReviewsResponse {
 
+    @Expose
     private int idPreviewResponse;
+    @Expose
     private int page;
     @SerializedName("results")
+    @Expose
     private List<Review> reviewList;
     @SerializedName("total_pages")
+    @Expose
     private int totalPages;
     @SerializedName("total_results")
+    @Expose
     private int totalResults;
 
     public ReviewsResponse() {

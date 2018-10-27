@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.legue.axel.myfavoritesmovies.R;
 import com.legue.axel.myfavoritesmovies.library.Constants;
-import com.legue.axel.myfavoritesmovies.model.Trailer;
+import com.legue.axel.myfavoritesmovies.database.model.Trailer;
 
 import java.util.List;
 

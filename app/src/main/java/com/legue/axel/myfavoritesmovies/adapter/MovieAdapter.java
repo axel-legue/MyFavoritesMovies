@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,7 @@ import android.widget.TextView;
 
 import com.legue.axel.myfavoritesmovies.R;
 import com.legue.axel.myfavoritesmovies.library.Constants;
-import com.legue.axel.myfavoritesmovies.model.Movie;
+import com.legue.axel.myfavoritesmovies.database.model.Movie;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -26,17 +27,27 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     private static final String TAG = MovieAdapter.class.getSimpleName();
     private Context mContext;
     private List<Movie> mMovieList;
+    private int page;
+
 
     private MovieListener mMovieListener;
 
     public interface MovieListener {
         void movieSelected(int position, Movie movie, View viewToAnimate);
+
+        void startScroll(int page);
     }
+
 
     public MovieAdapter(Context context, List<Movie> movieList, MovieListener movieListener) {
         mContext = context;
         mMovieList = movieList;
         mMovieListener = movieListener;
+        page = 1;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
     }
 
     @NonNull
@@ -50,8 +61,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
         final Movie movie = mMovieList.get(position);
 
-        if (movie != null) {
+        Log.i(TAG, "onBindViewHolder: position : " + position);
 
+        if (movie != null) {
             Picasso.with(mContext)
                     .load(BuildImageUrl(movie.getBackdropPath()))
                     .error(R.drawable.placeholder_image)
@@ -66,8 +78,21 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             ViewCompat.setTransitionName(holder.posterImageView, movie.getTitle());
 
             holder.wrapperMovieRelativeLayout.setOnClickListener(v -> mMovieListener.movieSelected(position, movie, holder.posterImageView));
+
+            loadNextpage(position);
         }
 
+    }
+
+    private void loadNextpage(int position) {
+        if (getItemCount() < 20) {
+            //Do nothing
+        } else {
+            if ((position != 0) && (getItemCount() - position == 10)) {
+                page++;
+                mMovieListener.startScroll(page);
+            }
+        }
     }
 
     private String BuildImageUrl(String endPointUrl) {

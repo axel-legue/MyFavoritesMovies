@@ -1,4 +1,4 @@
-package com.legue.axel.myfavoritesmovies.model;
+package com.legue.axel.myfavoritesmovies.database.model;
 
 import com.google.gson.annotations.SerializedName;
 

@@ -15,4 +15,6 @@
     <string name="movie_reviews">Reviews</string>
     <string name="author_name">By %1$s</string>
     <string name="trailer_name">Trailer %1$d</string>
+    <string name="image_for_adding_movie_to_favorite">Image for adding movie to favorite</string>
+    <string name="favorites_movies">Favorites Movies</string>
 </resources>

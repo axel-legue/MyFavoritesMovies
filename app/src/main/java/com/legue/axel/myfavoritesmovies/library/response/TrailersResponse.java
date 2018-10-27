@@ -1,14 +1,18 @@
-package com.legue.axel.myfavoritesmovies.model;
+package com.legue.axel.myfavoritesmovies.library.response;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.legue.axel.myfavoritesmovies.database.model.Trailer;
 
 import java.util.List;
 
 public class TrailersResponse {
 
     @SerializedName("id")
+    @Expose
     private int videoResponseId;
     @SerializedName("results")
+    @Expose
     private List<Trailer> videoList;
 
     public TrailersResponse() {

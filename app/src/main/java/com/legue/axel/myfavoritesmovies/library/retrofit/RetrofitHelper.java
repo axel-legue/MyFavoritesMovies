@@ -6,9 +6,9 @@ import android.util.Log;
 
 import com.legue.axel.myfavoritesmovies.library.Constants;
 import com.legue.axel.myfavoritesmovies.MyFavoritesMoviesApplication;
-import com.legue.axel.myfavoritesmovies.model.MoviesResponse;
-import com.legue.axel.myfavoritesmovies.model.ReviewsResponse;
-import com.legue.axel.myfavoritesmovies.model.TrailersResponse;
+import com.legue.axel.myfavoritesmovies.library.response.MoviesResponse;
+import com.legue.axel.myfavoritesmovies.library.response.ReviewsResponse;
+import com.legue.axel.myfavoritesmovies.library.response.TrailersResponse;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;

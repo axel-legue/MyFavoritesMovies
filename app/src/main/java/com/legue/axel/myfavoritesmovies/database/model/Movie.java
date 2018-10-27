@@ -1,40 +1,51 @@
-package com.legue.axel.myfavoritesmovies.model;
+package com.legue.axel.myfavoritesmovies.database.model;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 @Entity(tableName = "movie")
 public class Movie {
     @PrimaryKey(autoGenerate = true)
+    @SerializedName("id")
     private int id;
     @ColumnInfo(name = "poster_path")
+    @SerializedName("poster_path")
     private String posterPath;
-
+    @SerializedName("adult")
     private Boolean adult;
-
+    @SerializedName("overview")
     private String overview;
     @ColumnInfo(name = "release_date")
+    @SerializedName("release_date")
     private String releaseDate;
-    @ColumnInfo(name = "genre")
+    @SerializedName("genre_ids")
+    @Ignore
     private List<Integer> genreIds;
+    @SerializedName("original_title")
     @ColumnInfo(name = "original_title")
     private String originalTitle;
     @ColumnInfo(name = "original_language")
+    @SerializedName("original_language")
     private String originalLanguage;
-
+    @SerializedName("title")
     private String title;
     @ColumnInfo(name = "backdrop_path")
+    @SerializedName("backdrop_path")
     private String backdropPath;
-
+    @SerializedName("popularity")
     private float popularity;
     @ColumnInfo(name = "vote_count")
+    @SerializedName("vote_count")
     private int voteCount;
-
+    @SerializedName("video")
     private boolean isVideo;
+    @SerializedName("vote_average")
     @ColumnInfo(name = "vote_average")
     private float voteAverage;
 
@@ -48,7 +59,6 @@ public class Movie {
             Boolean adult,
             String overview,
             String releaseDate,
-            List<Integer> genreIds,
             String originalTitle,
             String originalLanguage,
             String title,
@@ -63,7 +73,6 @@ public class Movie {
         this.adult = adult;
         this.overview = overview;
         this.releaseDate = releaseDate;
-        this.genreIds = genreIds;
         this.originalTitle = originalTitle;
         this.originalLanguage = originalLanguage;
         this.title = title;
@@ -72,6 +81,7 @@ public class Movie {
         this.voteCount = voteCount;
         this.isVideo = isVideo;
         this.voteAverage = voteAverage;
+
     }
 
     public String getPosterPath() {

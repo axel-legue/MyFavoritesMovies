@@ -1,10 +1,13 @@
 package com.legue.axel.myfavoritesmovies;
 
 import android.annotation.SuppressLint;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -12,19 +15,21 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.legue.axel.myfavoritesmovies.adapter.ReviewAdapter;
 import com.legue.axel.myfavoritesmovies.adapter.TrailerAdapter;
+import com.legue.axel.myfavoritesmovies.database.MyFavoritesMoviesDatabase;
 import com.legue.axel.myfavoritesmovies.library.Constants;
 import com.legue.axel.myfavoritesmovies.library.retrofit.RetrofitHelper;
-import com.legue.axel.myfavoritesmovies.model.Movie;
-import com.legue.axel.myfavoritesmovies.model.Review;
-import com.legue.axel.myfavoritesmovies.model.ReviewsResponse;
-import com.legue.axel.myfavoritesmovies.model.Trailer;
-import com.legue.axel.myfavoritesmovies.model.TrailersResponse;
+import com.legue.axel.myfavoritesmovies.database.model.Movie;
+import com.legue.axel.myfavoritesmovies.database.model.Review;
+import com.legue.axel.myfavoritesmovies.library.response.ReviewsResponse;
+import com.legue.axel.myfavoritesmovies.database.model.Trailer;
+import com.legue.axel.myfavoritesmovies.library.response.TrailersResponse;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -33,8 +38,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static java.security.AccessController.getContext;
 
 public class DetailMovieActivity extends AppCompatActivity implements ActivityInterface {
     private static final String TAG = DetailMovieActivity.class.getSimpleName();
@@ -54,7 +57,8 @@ public class DetailMovieActivity extends AppCompatActivity implements ActivityIn
     RecyclerView mTrailerRecyclerView;
     @BindView(R.id.rv_reviews)
     RecyclerView mReviewRecyclerView;
-
+    @BindView(R.id.iv_add_favorite)
+    ImageView mAddToFavorite;
 
     private Movie mMovieSelected;
     private MyFavoritesMoviesApplication mApplication;
@@ -67,6 +71,10 @@ public class DetailMovieActivity extends AppCompatActivity implements ActivityIn
     private ReviewsResponse mReviewResponse;
     private List<Review> mReviewList;
 
+    private MyFavoritesMoviesDatabase mDatabase;
+
+    private LiveData<Movie> dbMovie;
+    private boolean isFavorite;
 
     TrailerAdapter.TrailerListener mTrailerListener = intent -> startActivity(intent);
 
@@ -84,6 +92,32 @@ public class DetailMovieActivity extends AppCompatActivity implements ActivityIn
     @Override
     public void initClickListener() {
 
+        mAddToFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isFavorite) {
+                    mAddToFavorite.setColorFilter(R.color.myFavoriteColorPrimary);
+                    AppExecutors.getInstance().getDiskIO().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.i(TAG, "Delete movie in database");
+                            mDatabase.movieDao().deleteMovie(mMovieSelected);
+                        }
+                    });
+                } else {
+                    mAddToFavorite.setColorFilter(R.color.cardview_dark_background);
+
+                    AppExecutors.getInstance().getDiskIO().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.i(TAG, "Insert movie in database");
+                            mDatabase.movieDao().inserMovie(mMovieSelected);
+                        }
+                    });
+                }
+            }
+        });
+
     }
 
     @Override
@@ -99,6 +133,7 @@ public class DetailMovieActivity extends AppCompatActivity implements ActivityIn
 
     @Override
     public void initData() {
+        mDatabase = MyFavoritesMoviesDatabase.getsInstance(getApplicationContext());
         mApplication = (MyFavoritesMoviesApplication) getApplication();
 
         Intent intent = getIntent();
@@ -128,9 +163,27 @@ public class DetailMovieActivity extends AppCompatActivity implements ActivityIn
             getTrailerMovie();
             setReviewAdapter();
             getReviewsMovie();
+            isFavorite();
+
         }
 
 
+    }
+
+    private void isFavorite() {
+        dbMovie = mDatabase.movieDao().getMovieByid(mMovieSelected.getId());
+        dbMovie.observe(this, new Observer<Movie>() {
+            @Override
+            public void onChanged(@Nullable Movie movie) {
+                if (movie == null) {
+                    isFavorite = false;
+                    mAddToFavorite.setColorFilter(ContextCompat.getColor(mApplication, R.color.cardview_dark_background));
+                } else {
+                    isFavorite = true;
+                    mAddToFavorite.setColorFilter(ContextCompat.getColor(mApplication, R.color.myFavoriteColorPrimary));
+                }
+            }
+        });
     }
 
 

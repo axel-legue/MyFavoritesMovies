@@ -143,6 +143,18 @@
                 tools:text="4.3" />
         </RelativeLayout>
 
+        <ImageView
+            android:id="@+id/iv_add_favorite"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:contentDescription="@string/image_for_adding_movie_to_favorite"
+            app:layout_constraintBottom_toTopOf="@+id/view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rl_wrapper_vote"
+            app:srcCompat="@drawable/ic_star_black_24dp" />
+
         <TextView
             android:id="@+id/tv_synopsis_label"
             android:layout_width="0dp"
