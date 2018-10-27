@@ -177,10 +177,10 @@ public class DetailMovieActivity extends AppCompatActivity implements ActivityIn
             public void onChanged(@Nullable Movie movie) {
                 if (movie == null) {
                     isFavorite = false;
-                    mAddToFavorite.setColorFilter(ContextCompat.getColor(mApplication, R.color.cardview_dark_background));
+                    mAddToFavorite.setImageDrawable(ContextCompat.getDrawable(mApplication, R.drawable.ic_favorite_outline_border_24px));
                 } else {
                     isFavorite = true;
-                    mAddToFavorite.setColorFilter(ContextCompat.getColor(mApplication, R.color.myFavoriteColorPrimary));
+                    mAddToFavorite.setImageDrawable(ContextCompat.getDrawable(mApplication, R.drawable.ic_favorite_outline_24px));
                 }
             }
         });

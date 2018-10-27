@@ -3,13 +3,17 @@ package com.legue.axel.myfavoritesmovies;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,14 +21,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.legue.axel.myfavoritesmovies.adapter.MovieAdapter;
 import com.legue.axel.myfavoritesmovies.database.MyFavoritesMoviesDatabase;
-import com.legue.axel.myfavoritesmovies.library.Constants;
-import com.legue.axel.myfavoritesmovies.library.retrofit.RetrofitHelper;
 import com.legue.axel.myfavoritesmovies.database.model.Movie;
+import com.legue.axel.myfavoritesmovies.library.Constants;
 import com.legue.axel.myfavoritesmovies.library.response.MoviesResponse;
+import com.legue.axel.myfavoritesmovies.library.retrofit.RetrofitHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,12 +101,14 @@ public class MainActivity extends AppCompatActivity implements ActivityInterface
         ButterKnife.bind(this);
 
         initClickListener();
+
         initData();
 
         // TODO : Save the current filter selected and restore it on rotation
         // TODO : Adjust Design ( Favorite Star / Remove Separator line on last element  / Set of color / Police Size )
         // TODO : Add Infinite Scroll
-        // TODO : Check internet connexion and display a warning if no connexion
+        // DONE : Check internet connexion and display a warning if no connexion
+        // TODO : Listen internet in real time
         // TODO : Load Favorite Movies if no connexion
         // TODO : Display Message if list are empty
         // TODO : Change Background of Main activity to black
@@ -124,12 +131,20 @@ public class MainActivity extends AppCompatActivity implements ActivityInterface
             case R.id.menu_top_rated_movies:
                 isScrolling = false;
                 mMovieAdapter.setPage(1);
-                loadTopRatedMovies(mCurrentPage);
+                if (isNetworkAvailable()) {
+                    loadTopRatedMovies(mCurrentPage);
+                } else {
+                    Toast.makeText(application, "You need internet access for this", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.menu_popular_movies:
                 isScrolling = false;
                 mMovieAdapter.setPage(1);
-                loadPopularMovies(mCurrentPage);
+                if (isNetworkAvailable()) {
+                    loadPopularMovies(mCurrentPage);
+                } else {
+                    Toast.makeText(application, "You need internet access for this", Toast.LENGTH_SHORT).show();
+                }
                 break;
 
             case R.id.menu_favorites_movies:
@@ -160,7 +175,29 @@ public class MainActivity extends AppCompatActivity implements ActivityInterface
         mMoviesRecyclerView.setAdapter(mMovieAdapter);
         mMoviesRecyclerView.setHasFixedSize(true);
 
-        loadPopularMovies(mCurrentPage);
+        if (isNetworkAvailable()) {
+            loadPopularMovies(mCurrentPage);
+        } else {
+            displayNoInternetDialog();
+        }
+    }
+
+    private void displayNoInternetDialog() {
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+        alertDialogBuilder
+                .setTitle("No network detected")
+                .setMessage("For optimal use of the application, connect to the internet")
+                .setCancelable(false)
+                .setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialogBuilder.create();
+        alertDialogBuilder.show();
     }
 
     private void loadPopularMovies(Integer page) {
@@ -207,6 +244,13 @@ public class MainActivity extends AppCompatActivity implements ActivityInterface
                 }
             }
         });
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     private Handler moviesHandler = new Handler() {
