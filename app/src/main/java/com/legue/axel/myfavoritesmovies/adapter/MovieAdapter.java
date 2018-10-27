@@ -14,8 +14,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.legue.axel.myfavoritesmovies.R;
-import com.legue.axel.myfavoritesmovies.library.Constants;
 import com.legue.axel.myfavoritesmovies.database.model.Movie;
+import com.legue.axel.myfavoritesmovies.library.Constants;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -79,19 +79,16 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
             holder.wrapperMovieRelativeLayout.setOnClickListener(v -> mMovieListener.movieSelected(position, movie, holder.posterImageView));
 
-            loadNextpage(position);
+            loadNextPage(position);
         }
 
     }
 
-    private void loadNextpage(int position) {
-        if (getItemCount() < 20) {
-            //Do nothing
-        } else {
-            if ((position != 0) && (getItemCount() - position == 10)) {
-                page++;
-                mMovieListener.startScroll(page);
-            }
+
+    private void loadNextPage(int position) {
+        if ((position != 0) && getItemCount() > 20 && (getItemCount() - position == 10)) {
+            page++;
+            mMovieListener.startScroll(page);
         }
     }
 

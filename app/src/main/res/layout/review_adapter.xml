@@ -18,7 +18,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Utilisateur 1" />
+        tools:text="User 1" />
 
     <TextView
         android:id="@+id/tv_review"

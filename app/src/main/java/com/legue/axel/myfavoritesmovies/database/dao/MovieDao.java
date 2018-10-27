@@ -19,10 +19,10 @@ public interface MovieDao {
     LiveData<List<Movie>> loadAllFavoriteMovie();
 
     @Query("SELECT * FROM movie WHERE id = :movieId")
-    LiveData<Movie> getMovieByid(int movieId);
+    LiveData<Movie> getMovieById(int movieId);
 
     @Insert
-    void inserMovie(Movie movie);
+    void insertMovie(Movie movie);
 
     @Delete
     void deleteMovie(Movie movie);

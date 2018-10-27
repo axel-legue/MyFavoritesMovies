@@ -20,9 +20,9 @@ public class RetrofitHelper {
 
     private static final String TAG = RetrofitHelper.class.getSimpleName();
 
-    public static void getPopularMovies(String page, String language, final int action, final Handler handlerMessage, final MyFavoritesMoviesApplication application) {
+    public static void getPopularMovies(String ApiKey,String page, String language, final int action, final Handler handlerMessage, final MyFavoritesMoviesApplication application) {
 
-        application.getRetrofitManager().getPopularMovies(page, language)
+        application.getRetrofitManager().getPopularMovies(ApiKey,page, language)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<MoviesResponse>() {
@@ -67,9 +67,9 @@ public class RetrofitHelper {
                 });
     }
 
-    public static void getTopRatedMovies(String page, String language, final int action, final Handler handlerMessage, final MyFavoritesMoviesApplication application) {
+    public static void getTopRatedMovies(String ApiKey,String page, String language, final int action, final Handler handlerMessage, final MyFavoritesMoviesApplication application) {
 
-        application.getRetrofitManager().getTopRatedMovies(page, language)
+        application.getRetrofitManager().getTopRatedMovies(ApiKey,page, language)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<MoviesResponse>() {
@@ -114,8 +114,8 @@ public class RetrofitHelper {
                 });
     }
 
-    public static void getTrailersMovie(int movieId, String language, final int action, final Handler handlerMessage, final MyFavoritesMoviesApplication application) {
-        application.getRetrofitManager().getTrailersMovie(movieId, language)
+    public static void getTrailersMovie(String ApiKey,int movieId, String language, final int action, final Handler handlerMessage, final MyFavoritesMoviesApplication application) {
+        application.getRetrofitManager().getTrailersMovie(ApiKey,movieId, language)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<TrailersResponse>() {
@@ -159,8 +159,8 @@ public class RetrofitHelper {
                 });
     }
 
-    public static void getReviewsMovie(int movieId, String language, String page, final int action, final Handler handlerMessage, final MyFavoritesMoviesApplication application) {
-        application.getRetrofitManager().getReviewsMovie(movieId, page, language)
+    public static void getReviewsMovie(String ApiKey,int movieId, String language, String page, final int action, final Handler handlerMessage, final MyFavoritesMoviesApplication application) {
+        application.getRetrofitManager().getReviewsMovie(ApiKey, movieId, page, language)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ReviewsResponse>() {

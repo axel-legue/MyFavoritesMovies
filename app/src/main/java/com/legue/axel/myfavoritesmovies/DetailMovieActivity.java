@@ -2,12 +2,10 @@ package com.legue.axel.myfavoritesmovies;
 
 import android.annotation.SuppressLint;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -15,7 +13,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -59,7 +56,7 @@ public class DetailMovieActivity extends AppCompatActivity implements ActivityIn
     RecyclerView mReviewRecyclerView;
     @BindView(R.id.iv_add_favorite)
     ImageView mAddToFavorite;
-
+    private String API_KEY_VALUE;
     private Movie mMovieSelected;
     private MyFavoritesMoviesApplication mApplication;
 
@@ -92,29 +89,20 @@ public class DetailMovieActivity extends AppCompatActivity implements ActivityIn
     @Override
     public void initClickListener() {
 
-        mAddToFavorite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isFavorite) {
-                    mAddToFavorite.setColorFilter(R.color.myFavoriteColorPrimary);
-                    AppExecutors.getInstance().getDiskIO().execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            Log.i(TAG, "Delete movie in database");
-                            mDatabase.movieDao().deleteMovie(mMovieSelected);
-                        }
-                    });
-                } else {
-                    mAddToFavorite.setColorFilter(R.color.cardview_dark_background);
+        mAddToFavorite.setOnClickListener(v -> {
+            if (isFavorite) {
+                mAddToFavorite.setColorFilter(R.color.myFavoriteColorPrimary);
+                AppExecutors.getInstance().getDiskIO().execute(() -> {
+                    Log.i(TAG, "Delete movie in database");
+                    mDatabase.movieDao().deleteMovie(mMovieSelected);
+                });
+            } else {
+                mAddToFavorite.setColorFilter(R.color.cardview_dark_background);
 
-                    AppExecutors.getInstance().getDiskIO().execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            Log.i(TAG, "Insert movie in database");
-                            mDatabase.movieDao().inserMovie(mMovieSelected);
-                        }
-                    });
-                }
+                AppExecutors.getInstance().getDiskIO().execute(() -> {
+                    Log.i(TAG, "Insert movie in database");
+                    mDatabase.movieDao().insertMovie(mMovieSelected);
+                });
             }
         });
 
@@ -133,6 +121,7 @@ public class DetailMovieActivity extends AppCompatActivity implements ActivityIn
 
     @Override
     public void initData() {
+        API_KEY_VALUE = getString(R.string.API_KEY);
         mDatabase = MyFavoritesMoviesDatabase.getsInstance(getApplicationContext());
         mApplication = (MyFavoritesMoviesApplication) getApplication();
 
@@ -171,17 +160,14 @@ public class DetailMovieActivity extends AppCompatActivity implements ActivityIn
     }
 
     private void isFavorite() {
-        dbMovie = mDatabase.movieDao().getMovieByid(mMovieSelected.getId());
-        dbMovie.observe(this, new Observer<Movie>() {
-            @Override
-            public void onChanged(@Nullable Movie movie) {
-                if (movie == null) {
-                    isFavorite = false;
-                    mAddToFavorite.setImageDrawable(ContextCompat.getDrawable(mApplication, R.drawable.ic_favorite_outline_border_24px));
-                } else {
-                    isFavorite = true;
-                    mAddToFavorite.setImageDrawable(ContextCompat.getDrawable(mApplication, R.drawable.ic_favorite_outline_24px));
-                }
+        dbMovie = mDatabase.movieDao().getMovieById(mMovieSelected.getId());
+        dbMovie.observe(this, movie -> {
+            if (movie == null) {
+                isFavorite = false;
+                mAddToFavorite.setImageDrawable(ContextCompat.getDrawable(mApplication, R.drawable.ic_favorite_outline_border_24px));
+            } else {
+                isFavorite = true;
+                mAddToFavorite.setImageDrawable(ContextCompat.getDrawable(mApplication, R.drawable.ic_favorite_outline_24px));
             }
         });
     }
@@ -199,6 +185,7 @@ public class DetailMovieActivity extends AppCompatActivity implements ActivityIn
 
     private void getTrailerMovie() {
         RetrofitHelper.getTrailersMovie(
+                API_KEY_VALUE,
                 mMovieSelected.getId(),
                 Constants.LANGUAGE_US,
                 Constants.ACTION_GET_TRAILER,
@@ -228,6 +215,7 @@ public class DetailMovieActivity extends AppCompatActivity implements ActivityIn
 
     private void getReviewsMovie() {
         RetrofitHelper.getReviewsMovie(
+                API_KEY_VALUE,
                 mMovieSelected.getId(),
                 Constants.LANGUAGE_US,
                 "1",

@@ -33,6 +33,5 @@ public class Constants {
      * Youtube
      */
     public static final String BASE_YOUTUBE_URL = "http://www.youtube.com/watch?v=";
-    public static final String YOUTUBE_API_KEY = "AIzaSyB0u2ZKYsF8iQPd3l1BtZV6zYL4Og_ZOX0";
 
 }

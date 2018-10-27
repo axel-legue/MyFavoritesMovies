@@ -2,8 +2,6 @@ package com.legue.axel.myfavoritesmovies.library.retrofit;
 
 import android.util.Log;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.legue.axel.myfavoritesmovies.library.TheMovieDBService;
 import com.legue.axel.myfavoritesmovies.library.response.MoviesResponse;
 import com.legue.axel.myfavoritesmovies.library.response.ReviewsResponse;
@@ -27,8 +25,6 @@ public class RetrofitManager {
     private static final String PAGE_KEY = "page";
     private static final String LANGUAGE_KEY = "language";
     private static final String API_KEY = "api_key";
-    private static final String API_KEY_VALUE = "c84a53cfcf0110ef15678006695e3b38";
-
     private final TheMovieDBService movieDBService;
     private final Retrofit retrofit;
 
@@ -51,40 +47,39 @@ public class RetrofitManager {
     }
 
 
-    public Observable<MoviesResponse> getPopularMovies(String page, String language) {
+    public Observable<MoviesResponse> getPopularMovies(String apiKey,String page, String language) {
         Map<String, String> queryParams = new HashMap<>();
-        queryParams.put(API_KEY, API_KEY_VALUE);
+        queryParams.put(API_KEY, apiKey);
         queryParams.put(LANGUAGE_KEY, language);
         queryParams.put(PAGE_KEY, page);
         Log.i(TAG, "getPopularMovies: " + page);
         Log.i(TAG, "getPopularMovies: " + language);
-        Log.i(TAG, "getPopularMovies: " + API_KEY_VALUE);
+        Log.i(TAG, "getPopularMovies: " + apiKey);
 
         return movieDBService.getPopularMovies(queryParams);
     }
 
-
-    public Observable<MoviesResponse> getTopRatedMovies(String page, String language) {
+    public Observable<MoviesResponse> getTopRatedMovies(String apiKey,String page, String language) {
         Map<String, String> queryParams = new HashMap<>();
-        queryParams.put(API_KEY, API_KEY_VALUE);
+        queryParams.put(API_KEY, apiKey);
         queryParams.put(LANGUAGE_KEY, language);
         queryParams.put(PAGE_KEY, page);
 
         return movieDBService.getTopRatedMovies(queryParams);
     }
 
-    public Observable<TrailersResponse> getTrailersMovie(int movieId, String language) {
+    public Observable<TrailersResponse> getTrailersMovie(String apiKey,int movieId, String language) {
         Map<String, String> queryParams = new HashMap<>();
-        queryParams.put(API_KEY, API_KEY_VALUE);
+        queryParams.put(API_KEY, apiKey);
         queryParams.put(LANGUAGE_KEY, language);
 
         return movieDBService.getTrailerMovie(movieId, queryParams);
     }
 
-    public Observable<ReviewsResponse> getReviewsMovie(int movieId, String page, String language) {
+    public Observable<ReviewsResponse> getReviewsMovie(String apiKey, int movieId, String page, String language) {
         Log.i(TAG, "getReviewsMovie: ");
         Map<String, String> queryParams = new HashMap<>();
-        queryParams.put(API_KEY, API_KEY_VALUE);
+        queryParams.put(API_KEY, apiKey);
         queryParams.put(LANGUAGE_KEY, language);
         queryParams.put(PAGE_KEY, page);
 

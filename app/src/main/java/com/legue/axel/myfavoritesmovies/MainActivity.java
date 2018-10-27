@@ -2,9 +2,11 @@ package com.legue.axel.myfavoritesmovies;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -17,6 +19,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,18 +42,37 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements ActivityInterface {
 
+    /**
+     * ===========================================================================================
+     * GENERAL UPDATE TO MAKE FOR A BETTER APPLICATION
+     * =============================================================================================
+     */
+    // TODO : Adjust Design ( Remove Separator line on last element  / Set of color / Police Size )
+    // TODO : Display Message if list are empty / error
+    // TODO : Add Transition onScroll down/up on  DetailMovieActivity
+    // TODO : Find a better way to display Trailer ?
+    // TODO : fine tune the workflow around connectivity
+
     private final static String TAG = MainActivity.class.getSimpleName();
 
     private MyFavoritesMoviesApplication application;
     private MoviesResponse moviesResponse;
     private MovieAdapter mMovieAdapter;
-    private List<Movie> movieList;
+    private ArrayList<Movie> movieList;
     private MyFavoritesMoviesDatabase mDatabase;
+    private NetworkChangeReceiver mNetworkChangeReceiver;
+
+    private MenuItem mMenuItem;
+    private int menuIdSelected = -1;
+    private static final String KEY_MENU_SELECTED = "key_menu";
+
     private int mCurrentPage = 1;
     private boolean topRatedSelected = false;
     private boolean popularSelected = false;
     private boolean favoriteSelected = false;
     private boolean isScrolling = false;
+    private boolean isNetworkAvailable = false;
+    String API_KEY_VALUE;
 
     @BindView(R.id.rv_movies)
     RecyclerView mMoviesRecyclerView;
@@ -88,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements ActivityInterface
             } else if (popularSelected) {
                 loadPopularMovies(page);
             } else {
-                // TODO : Add query 20 by 20
+                // TODO : Add query 20 by 20 ?
             }
         }
     };
@@ -96,42 +118,106 @@ public class MainActivity extends AppCompatActivity implements ActivityInterface
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i(TAG, "onCreate: ");
         setContentView(R.layout.activity_main);
+        API_KEY_VALUE = getString(R.string.API_KEY);
 
         ButterKnife.bind(this);
 
         initClickListener();
 
+        if (savedInstanceState != null) {
+            menuIdSelected = savedInstanceState.getInt(KEY_MENU_SELECTED);
+        }
+        mNetworkChangeReceiver = new NetworkChangeReceiver();
+
         initData();
+    }
 
-        // TODO : Save the current filter selected and restore it on rotation
-        // TODO : Adjust Design ( Favorite Star / Remove Separator line on last element  / Set of color / Police Size )
-        // TODO : Add Infinite Scroll
-        // DONE : Check internet connexion and display a warning if no connexion
-        // TODO : Listen internet in real time
-        // TODO : Load Favorite Movies if no connexion
-        // TODO : Display Message if list are empty
-        // TODO : Change Background of Main activity to black
-        // TODO : Add Transition onScroll down/up on  DetailMovieActivity
-        // TODO : Find a better way to display Trailer ?
+    private void registerNetworkChangeReceiver() {
+        Log.i(TAG, "registerNetworkChangeReceiver: ");
+        if (mNetworkChangeReceiver != null) {
+            registerReceiver(mNetworkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        }
+    }
 
+    private void unregisterNetWorkChangeReceiver() {
+        Log.i(TAG, "unregisterNetWorkChangeReceiver: ");
+        if (mNetworkChangeReceiver != null) {
+            unregisterReceiver(mNetworkChangeReceiver);
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.i(TAG, "onStart: ");
+        registerNetworkChangeReceiver();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.i(TAG, "onDestroy: ");
+        super.onDestroy();
+        unregisterNetWorkChangeReceiver();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        Log.i(TAG, "onSaveInstanceState: ");
+        outState.putInt(KEY_MENU_SELECTED, menuIdSelected);
+        super.onSaveInstanceState(outState);
+    }
+
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Log.i(TAG, "onRestoreInstanceState: ");
+        if (savedInstanceState.containsKey(KEY_MENU_SELECTED)) {
+            menuIdSelected = savedInstanceState.getInt(KEY_MENU_SELECTED);
+        }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        Log.i(TAG, "onCreateOptionsMenu: ");
         getMenuInflater().inflate(R.menu.menu, menu);
+        if (menuIdSelected == -1) {
+            return true;
+        }
+        switch (menuIdSelected) {
+            case R.id.menu_popular_movies:
+                mMenuItem = menu.findItem(R.id.menu_popular_movies);
+                mMenuItem.setChecked(true);
+                loadPopularMovies(mCurrentPage);
+                break;
+            case R.id.menu_top_rated_movies:
+                mMenuItem = menu.findItem(R.id.menu_top_rated_movies);
+                mMenuItem.setChecked(true);
+                loadTopRatedMovies(mCurrentPage);
+                break;
+            case R.id.menu_favorites_movies:
+                mMenuItem = menu.findItem(R.id.menu_favorites_movies);
+                mMenuItem.setChecked(true);
+                loadFavoritesMovies();
+                break;
+        }
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int itemId = item.getItemId();
+        Log.i(TAG, "onOptionsItemSelected: ");
+        int id = item.getItemId();
 
-        switch (itemId) {
+        switch (id) {
             case R.id.menu_top_rated_movies:
+                menuIdSelected = id;
+                item.setChecked(true);
                 isScrolling = false;
                 mMovieAdapter.setPage(1);
-                if (isNetworkAvailable()) {
+                if (isNetworkAvailable) {
                     loadTopRatedMovies(mCurrentPage);
                 } else {
                     Toast.makeText(application, "You need internet access for this", Toast.LENGTH_SHORT).show();
@@ -139,8 +225,10 @@ public class MainActivity extends AppCompatActivity implements ActivityInterface
                 break;
             case R.id.menu_popular_movies:
                 isScrolling = false;
+                menuIdSelected = id;
+                item.setChecked(true);
                 mMovieAdapter.setPage(1);
-                if (isNetworkAvailable()) {
+                if (isNetworkAvailable) {
                     loadPopularMovies(mCurrentPage);
                 } else {
                     Toast.makeText(application, "You need internet access for this", Toast.LENGTH_SHORT).show();
@@ -149,6 +237,8 @@ public class MainActivity extends AppCompatActivity implements ActivityInterface
 
             case R.id.menu_favorites_movies:
                 isScrolling = false;
+                menuIdSelected = id;
+                item.setChecked(true);
                 loadFavoritesMovies();
                 break;
         }
@@ -161,7 +251,7 @@ public class MainActivity extends AppCompatActivity implements ActivityInterface
 
     @Override
     public void initData() {
-
+        Log.i(TAG, "initData: ");
         mDatabase = MyFavoritesMoviesDatabase.getsInstance(getApplicationContext());
 
         application = (MyFavoritesMoviesApplication) getApplication();
@@ -175,11 +265,6 @@ public class MainActivity extends AppCompatActivity implements ActivityInterface
         mMoviesRecyclerView.setAdapter(mMovieAdapter);
         mMoviesRecyclerView.setHasFixedSize(true);
 
-        if (isNetworkAvailable()) {
-            loadPopularMovies(mCurrentPage);
-        } else {
-            displayNoInternetDialog();
-        }
     }
 
     private void displayNoInternetDialog() {
@@ -190,23 +275,20 @@ public class MainActivity extends AppCompatActivity implements ActivityInterface
                 .setTitle("No network detected")
                 .setMessage("For optimal use of the application, connect to the internet")
                 .setCancelable(false)
-                .setNeutralButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+                .setNeutralButton("Ok", (dialog, which) -> dialog.dismiss());
         alertDialogBuilder.create();
         alertDialogBuilder.show();
     }
 
     private void loadPopularMovies(Integer page) {
+        Log.i(TAG, "loadPopularMovies: ");
         popularSelected = true;
         topRatedSelected = false;
         favoriteSelected = false;
 
         mLoadingProgressBar.setVisibility(View.VISIBLE);
         RetrofitHelper.getPopularMovies(
+                API_KEY_VALUE,
                 page.toString(),
                 Constants.LANGUAGE_US,
                 Constants.ACTION_COMPLETE,
@@ -215,12 +297,14 @@ public class MainActivity extends AppCompatActivity implements ActivityInterface
     }
 
     private void loadTopRatedMovies(Integer page) {
+        Log.i(TAG, "loadTopRatedMovies: ");
         popularSelected = false;
         topRatedSelected = true;
         favoriteSelected = false;
 
         mLoadingProgressBar.setVisibility(View.VISIBLE);
         RetrofitHelper.getTopRatedMovies(
+                API_KEY_VALUE,
                 page.toString(),
                 Constants.LANGUAGE_US,
                 Constants.ACTION_COMPLETE,
@@ -229,29 +313,23 @@ public class MainActivity extends AppCompatActivity implements ActivityInterface
     }
 
     private void loadFavoritesMovies() {
+        Log.i(TAG, "loadFavoritesMovies: ");
         popularSelected = false;
         topRatedSelected = false;
         favoriteSelected = true;
 
+        mLoadingProgressBar.setVisibility(View.VISIBLE);
         LiveData<List<Movie>> favoritesMovies = mDatabase.movieDao().loadAllFavoriteMovie();
-        favoritesMovies.observe(this, new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(@Nullable List<Movie> movies) {
-                if (movies != null && movies.size() > 0) {
-                    movieList.clear();
-                    movieList.addAll(movies);
-                    mMovieAdapter.notifyDataSetChanged();
-                }
+        favoritesMovies.observe(this, movies -> {
+            if (movies != null && movies.size() > 0) {
+                mLoadingProgressBar.setVisibility(View.INVISIBLE);
+                movieList.clear();
+                movieList.addAll(movies);
+                mMovieAdapter.notifyDataSetChanged();
             }
         });
     }
 
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
 
     private Handler moviesHandler = new Handler() {
         @Override
@@ -267,7 +345,6 @@ public class MainActivity extends AppCompatActivity implements ActivityInterface
                         }
                         movieList.addAll(moviesResponse.getMovieList());
                         mMovieAdapter.notifyDataSetChanged();
-
                     }
                     break;
 
@@ -278,5 +355,48 @@ public class MainActivity extends AppCompatActivity implements ActivityInterface
             super.handleMessage(msg);
         }
     };
+
+    public class NetworkChangeReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i(TAG, "onReceive ");
+            try {
+                if (isOnline(context)) {
+                    if (movieList == null || movieList.size() == 0) {
+                        loadPopularMovies(mCurrentPage);
+                    }
+                    isNetworkAvailable = true;
+               //     Toast.makeText(context, "Network ON", Toast.LENGTH_SHORT).show();
+                } else {
+                    displayNoInternetDialog();
+                    loadFavoritesMovies();
+                    isNetworkAvailable = false;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.d(TAG, "onReceive error : " + e.toString());
+            }
+        }
+
+        private boolean isOnline(Context context) {
+            try {
+                ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo netInfo = null;
+                try {
+                    netInfo = cm.getActiveNetworkInfo();
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                    Log.d(TAG, "isOnline: ConnectivityManager.getActiveNetworkInfo() is null");
+                }
+                //should check null because in airplane mode it will be null
+                return (netInfo != null && netInfo.isConnected());
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+    }
+
 
 }

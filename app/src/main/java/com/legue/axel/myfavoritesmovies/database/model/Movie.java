@@ -4,13 +4,16 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.os.Parcel;
+import android.os.Parcelable;
+
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
 @Entity(tableName = "movie")
-public class Movie {
+public class Movie implements Parcelable {
     @PrimaryKey(autoGenerate = true)
     @SerializedName("id")
     private int id;
@@ -81,8 +84,58 @@ public class Movie {
         this.voteCount = voteCount;
         this.isVideo = isVideo;
         this.voteAverage = voteAverage;
-
     }
+
+    protected Movie(Parcel in) {
+        id = in.readInt();
+        posterPath = in.readString();
+        byte tmpAdult = in.readByte();
+        adult = tmpAdult == 0 ? null : tmpAdult == 1;
+        overview = in.readString();
+        releaseDate = in.readString();
+        originalTitle = in.readString();
+        originalLanguage = in.readString();
+        title = in.readString();
+        backdropPath = in.readString();
+        popularity = in.readFloat();
+        voteCount = in.readInt();
+        isVideo = in.readByte() != 0;
+        voteAverage = in.readFloat();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(posterPath);
+        dest.writeByte((byte) (adult == null ? 0 : adult ? 1 : 2));
+        dest.writeString(overview);
+        dest.writeString(releaseDate);
+        dest.writeString(originalTitle);
+        dest.writeString(originalLanguage);
+        dest.writeString(title);
+        dest.writeString(backdropPath);
+        dest.writeFloat(popularity);
+        dest.writeInt(voteCount);
+        dest.writeByte((byte) (isVideo ? 1 : 0));
+        dest.writeFloat(voteAverage);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Movie> CREATOR = new Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 
     public String getPosterPath() {
         return posterPath;
@@ -195,4 +248,6 @@ public class Movie {
     public void setVoteAverage(float voteAverage) {
         this.voteAverage = voteAverage;
     }
+
+
 }
