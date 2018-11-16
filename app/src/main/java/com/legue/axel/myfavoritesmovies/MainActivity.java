@@ -2,6 +2,7 @@ package com.legue.axel.myfavoritesmovies;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -59,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements ActivityInterface
     private MoviesResponse moviesResponse;
     private MovieAdapter mMovieAdapter;
     private ArrayList<Movie> movieList;
+    LiveData<List<Movie>> favoritesMovies;
     private MyFavoritesMoviesDatabase mDatabase;
     private NetworkChangeReceiver mNetworkChangeReceiver;
 
@@ -317,11 +319,28 @@ public class MainActivity extends AppCompatActivity implements ActivityInterface
         popularSelected = false;
         topRatedSelected = false;
         favoriteSelected = true;
-
         mLoadingProgressBar.setVisibility(View.VISIBLE);
-        LiveData<List<Movie>> favoritesMovies = mDatabase.movieDao().loadAllFavoriteMovie();
+
+        // Pour récupèrer le ViewModel on doit appeler le fournisseur des ViewModel pour cette activité et passer
+        // la classe ViewModel en paramètre.
+        MainViewModel mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+
+        /** REPLACED BY VIEW MODEL :
+        favoritesMovies = mDatabase.movieDao().loadAllFavoriteMovie();
         favoritesMovies.observe(this, movies -> {
             if (movies != null && movies.size() > 0) {
+                mLoadingProgressBar.setVisibility(View.INVISIBLE);
+                movieList.clear();
+                movieList.addAll(movies);
+                mMovieAdapter.notifyDataSetChanged();
+            }
+        });
+         **/
+        // Maintenant on peut récupèrer notre LiveData object en utilisant la méthode  "getFavoritesMovies()"
+        // de notre ViewModel
+        mainViewModel.getFavoritesMovies().observe(this, movies -> {
+            if (movies != null && movies.size() > 0) {
+                Log.i(TAG, "loadFavoritesMovies from ViewModel: ");
                 mLoadingProgressBar.setVisibility(View.INVISIBLE);
                 movieList.clear();
                 movieList.addAll(movies);
@@ -367,7 +386,7 @@ public class MainActivity extends AppCompatActivity implements ActivityInterface
                         loadPopularMovies(mCurrentPage);
                     }
                     isNetworkAvailable = true;
-               //     Toast.makeText(context, "Network ON", Toast.LENGTH_SHORT).show();
+                    //     Toast.makeText(context, "Network ON", Toast.LENGTH_SHORT).show();
                 } else {
                     displayNoInternetDialog();
                     loadFavoritesMovies();
