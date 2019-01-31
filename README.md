@@ -22,11 +22,11 @@ Through this project, i use:
 
 ## Look
 - Home Screen <br/>
-![Image](https://github.com/axel-legue/MyFavoritesMovies/blob/master/Home_screen.png) <br/>
+![Image](https://github.com/axel-legue/MyFavoritesMovies/blob/master/Home_screen.png =250x250) <br/>
 - Detail Screen <br/>
-![Image](https://github.com/axel-legue/MyFavoritesMovies/blob/master/detail_movie.png)  <br/>
+![Image](https://github.com/axel-legue/MyFavoritesMovies/blob/master/detail_movie.png =250x250)  <br/>
 - Detail Screen - Trailer Review <br/>
-![Image](https://github.com/axel-legue/MyFavoritesMovies/blob/master/review_trailer.png) <br/>
+![Image](https://github.com/axel-legue/MyFavoritesMovies/blob/master/review_trailer.png =250x250) <br/>
 
 ## Usefull Resources 
 
